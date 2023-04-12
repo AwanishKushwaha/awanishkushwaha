@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -95,11 +95,26 @@
     }
 
 
+    function EmailValidate(txtEmail) {
 
+        var Email = $('#' + txtEmail).val();
+        if (Email != null && Email != "") {
+            reg = /^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,}$/i;
+            if (reg.test(Email) == true) {
+                $("#" + txtEmail).removeAttr("style");
+            }
+            else {
+                $("#" + txtEmail).css({ "border-color": "red" });
+            }
+
+        }
+        else {
+            $("#" + txtEmail).css({ "border-color": "red" });
+        }
+    }
 
     function IsValidContact()
     {
-    debugger;
     var retvalue=true;
     if ($("#txtName").val() == "")
     {
@@ -134,78 +149,44 @@
         $("#txtPhone").removeAttr("style");
     }
 
-    if ($("#txtEmail").val() == "")
-    {
-
-        $("#txtEmail").css({ "border-color": "red" });
-        retvalue=false;
-    }
-    else
-    {
-        $("#txtEmail").removeAttr("style");
-    }
-        return retvalue;
-    }
-
-    function validateForm() {
-        if (!IsValidContact()) {
-
-            alert("Form not submitted");//Validation Message
-            return false;
+    var Email = $("#txtEmail").val();
+    if (Email != null && Email != "") {
+        reg = /^[A-Z0-9._%+-]+@(?:[A-Z0-9-]+\.)+[A-Z]{2,}$/i;
+        if (reg.test(Email) == true) {
+            $("#txtEmail").removeAttr("style");
         }
         else {
-            submitted = true;
-            return true;
+            $("#txtEmail").css({ "border-color": "red" });
+            retvalue = false;
         }
-    }
-
-
-    function postToGoogle() {
-    if(IsValidContact())
-    {
-        var field1 = $("#txtName").val();
-        var field2 = $("#txtSubject").val();
-        var field3 = $("#txtPhone").val();
-        var field4 = $("#txtEmail").val();
-        var field4 = $("#txtEmail").val();
-
-    $.ajax({
-    url: "https://docs.google.com/forms/u/0/d/e/1FAIpQLSdJNqxAWHPfSKmUvEU9IvlCX38tgFLNuSw7LZiXRtpADRN0qQ/formResponse",
-    data: {
-    "entry.2005620554": field1,
-    "entry.1045781291": field2,
-    "entry.1166974658": field3,
-    "entry.839337160": field4
-    },
-    type: "POST",
-    dataType: "xml",
-    success: function (d) {
-    $('.contact-form-error-message').hide();
-    $('.contact-form-success-message').show();
-    $("input[data-name='Name']").val('');
-    $("input[data-name='Email']").val('');
-    $("input[data-name='Phone']").val('');
-    $("textarea[data-name='Message']").val('');
-    },
-    error: function (x, y, z) {
-    $('.contact-form-success-message').hide();
-    $('.contact-form-error-message').show();
-    $("input[data-name='Name']").val('');
-    $("input[data-name='Email']").val('');
-    $("input[data-name='Phone']").val('');
-    $("textarea[data-name='Message']").val('');
 
     }
-    });
-    $('.contact-form-error-message').hide();
-    $('.contact-form-success-message').show();
-    $("input[data-name='Name']").val('');
-    $("input[data-name='Email']").val('');
-    $("input[data-name='Phone']").val('');
-    $("textarea[data-name='Message']").val('');
+    else {
+        $("#txtEmail").css({ "border-color": "red" });
+        retvalue = false;
+    }  
+
+
+    if ($("#txtMessage").val() == "") {
+
+        $("#txtMessage").css({ "border-color": "red" });
+        retvalue = false;
     }
+    else {
+        $("#txtMessage").removeAttr("style");
     }
 
+        return retvalue;
+    }      
+   
+
+    var specialKeys = new Array();
+    specialKeys.push(8); //Backspace
+    function IsNumeric(e) {
+        var keyCode = e.which ? e.which : e.keyCode
+        var retValue = ((keyCode >= 48 && keyCode <= 57) || specialKeys.indexOf(keyCode) != -1);
+        return retValue;
+    }
     /*========End: Contact Form Submit========*/
   
 
@@ -802,37 +783,37 @@
           </div>
 
           <div class="col-lg-7 mt-5 mt-lg-0 d-flex align-items-stretch">
-            <form class="php-email-form" action="https://docs.google.com/forms/d/e/1FAIpQLSdYcwuVIa_vhLRglEmj6rvHxE7qYyw-UA31lrrFIBZIr0gzDQ/formResponse" method="post" target="hidden_iframe" onsubmit="return validateForm();">
+            <form class="php-email-form" method="post" autocomplete="off" name="Contact-Form">
               <div class="row">
                 <div class="form-group col-md-6">
                   <label for="txtName">Your Name <font color="red">*</font></label>
-                  <input type="text" name="txtName" class="form-control" id="txtName" onblur='SingleContactValid("txtName")' required>
+                  <input type="text" name="Name" class="form-control" id="txtName" onblur='SingleContactValid("txtName")' required>
                 </div>
                   <div class="form-group col-md-6">
                       <label for="txtSubject">Subject <font color="red">*</font></label>
-                      <input type="text" class="form-control" name="txtSubject" id="txtSubject" onblur='SingleContactValid("txtSubject")' required>
+                      <input type="text" class="form-control" name="Subject" id="txtSubject" ondragstart="return false;" ondrop="return false;" onblur='SingleContactValid("txtSubject")' required>
                   </div>                
               </div>
                 <div class="row">
                     <div class="form-group col-md-6">
                         <label for="txtPhone">Your Phone <font color="red">*</font></label>
-                        <input type="text" class="form-control" name="txtPhone" id="txtPhone" onblur='SingleContactValid("txtPhone")' required>
+                        <input type="text" class="form-control" name="Phone" maxlength="10"  id="txtPhone" onPaste="return false" ondragstart="return false;" ondrop="return false;" onkeypress="return IsNumeric(event)" onblur='SingleContactValid("txtPhone")' required>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="txtEmail">Your Email <font color="red">*</font></label>
-                        <input type="email" class="form-control" name="txtEmail" id="txtEmail" onblur='SingleContactValid("txtEmail")' required>
+                        <input type="text" class="form-control" name="Email" id="txtEmail"  ondragstart="return false;" ondrop="    return false;" onblur='EmailValidate("txtEmail")' required>
                     </div>
                 </div>
               <div class="form-group">
                 <label for="txtMessage">Message <font color="red">*</font></label>
-                <textarea class="form-control" name="txtMessage" id="txtMessage" rows="10" onblur='SingleContactValid("txtMessage")' required></textarea>
+                <textarea class="form-control" name="Message" id="txtMessage" rows="10" onblur='SingleContactValid("txtMessage")' required></textarea>
               </div>
               <div class="my-3">
                 <div class="loading">Loading</div>
                 <div class="error-message">Oops! An unexpected error occured.</div>
                 <div class="sent-message">Thank you for contacting, will get in touch soon.</div>
               </div>
-              <div class="text-center"><button type="submit" id='ContactSubmit'>Send Message</button></div>
+              <div class="text-center"><button type="submit" id='ContactSubmit' onclick="return SubmitData()">Send Message</button></div>
             </form>
           </div>
 
@@ -869,7 +850,34 @@
   <script src="assets/js/main.js"></script>
 
     
-    
+    <script type="text/javascript">
+
+        function SubmitData() {
+            const form = document.forms['Contact-Form'];
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwYP2CXfOHnff4vFfyrpqqg6o-IyzWdVKhqxJPuqNhv_L0nqdVYLArAFkgPf4Yw8v4n/exec';
+            //e.preventDefault();
+            if (IsValidContact()) {
+                $("#ContactSubmit").empty().wrapInner('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span> Loading...</span>');
+                $("#ContactSubmit").prop('disabled', true);
+                fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+                  .then(response => {
+                      $("#ContactSubmit").empty().wrapInner('Submit');
+                      $("#ContactSubmit").prop('disabled', false);
+                      $("#txtName").val('');
+                      $("#txtSubject").val('');
+                      $("#txtPhone").val('');
+                      $("#txtEmail").val('');
+                      $("#txtMessage").val('');
+                      alert("Thanks for Contacting me..! I Will Contact You Soon...")
+                  })
+                  .catch(error => console.error('Error!', error.message));
+            }
+            else
+            {
+                return false;
+            }
+        }       
+    </script>
 </body>
 
 </html>
